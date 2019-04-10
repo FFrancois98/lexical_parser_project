@@ -20,7 +20,7 @@ FILE *in_fp;
 void addChar();
 void getChar();
 void getNonBlank();
-
+void getNewLine();
 /******************************************************/
 /* main driver */
 int main(int argc, char *argv[]) 
@@ -69,7 +69,7 @@ int lookup(char ch) {
             break;
         default:
             addChar();
-            nextToken = EOF;
+            nextToken = '\n';		// Changed the default token to NL
             break;
     }
     return nextToken;
@@ -99,6 +99,14 @@ void getChar() {
     } else {
         charClass = EOF;
     }
+}
+
+
+/* getNewLine - keeps getting chars until its the
+new line char */
+void getNewLine() {
+	while (nextChar != '\n')
+		getChar();
 }
 
 /*****************************************************/
@@ -141,6 +149,11 @@ int lex() {
         /* Parentheses and operators */
         case UNKNOWN:
             lookup(nextChar);
+			if (nextToken == '\n') {
+				getNewLine();
+				printf("Error: Next lexeme not in a valid expression. Moving to next expr. \n\n");
+				return nextToken;
+			}
             getChar();
             break;
 
