@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
         getChar();
         do {
             lex();
+			expr();
         } while (nextToken != EOF);
     }
 
