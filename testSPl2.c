@@ -1,37 +1,37 @@
 /* front.c - a lexical analyzer system for simple arithmetic expressions */
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
 
-#include "front.h"
-#include "parser.h"
+#include "testSPl2.h"
+#include "testParser.h"
 
 /* Global Variable */
 int nextToken;
 
 /* Local Variables */
-static int charClass;
-static char lexeme [100];
-static char nextChar;
-static int lexLen;
-static FILE *in_fp;
+int charClass;
+char lexeme [100];
+char nextChar;
+int lexLen;
+FILE *in_fp;
 
 /* Local Function declarations */
-static void addChar();
-static void getChar();
-static void getNonBlank();
+void addChar();
+void getChar();
+void getNonBlank();
 
 /******************************************************/
 /* main driver */
-int main() 
+int main(int argc, char *argv[]) 
 {
     /* Open the input data file and process its contents */
-    if ((in_fp = fopen("front.in", "r")) == NULL) {
+    if ((in_fp = fopen(argv[1], "r")) == NULL) {
         printf("ERROR - cannot open front.in \n");
     } else {
         getChar();
         do {
             lex();
-            expr();
         } while (nextToken != EOF);
     }
 
@@ -41,7 +41,7 @@ int main()
 /*****************************************************/
 /* lookup - a function to lookup operators and parentheses and return the 
  * token */
-static int lookup(char ch) {
+int lookup(char ch) {
     switch (ch) {
         case '(':
             addChar();
@@ -77,7 +77,7 @@ static int lookup(char ch) {
 
 /*****************************************************/
 /* addChar - a function to add nextChar to lexeme */
-static void addChar() {
+void addChar() {
     if (lexLen <= 98) {
         lexeme[lexLen++] = nextChar;
         lexeme[lexLen] = 0;
@@ -89,7 +89,7 @@ static void addChar() {
 /*****************************************************/
 /* getChar - a function to get the next character of input and determine its 
  * character class */
-static void getChar() {
+void getChar() {
     if ((nextChar = getc(in_fp)) != EOF) {
         if (isalpha(nextChar))
             charClass = LETTER;
@@ -104,8 +104,9 @@ static void getChar() {
 /*****************************************************/
 /* getNonBlank - a function to call getChar until it returns a non-whitespace 
  * character */
-static void getNonBlank() {
-    while (isspace(nextChar)) getChar();
+void getNonBlank() {
+    while (isspace(nextChar)) 
+        getChar();
 }
 
 /*****************************************************/
